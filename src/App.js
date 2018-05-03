@@ -1,15 +1,34 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
+import firebase from 'firebase'
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  DATABASE_URL,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  SENDER_ID
+} from 'react-native-dotenv'
 
-import { Header } from './components'
+import { Form, Header } from './components'
 
 class App extends Component {
   state = {}
+  componentWillMount() {
+    firebase.initializeApp({
+      apiKey: API_KEY,
+      authDomain: AUTH_DOMAIN,
+      databaseURL: DATABASE_URL,
+      projectId: PROJECT_ID,
+      storageBucket: STORAGE_BUCKET,
+      messagingSenderId: SENDER_ID
+    })
+  }
   render() {
     return (
       <View>
         <Header text="Auth" />
-        <Text>App.js</Text>
+        <Form />
       </View>
     )
   }
