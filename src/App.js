@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import firebase from 'firebase'
@@ -10,10 +12,12 @@ import {
   SENDER_ID
 } from 'react-native-dotenv'
 
-import { Form, Header } from './components'
+import { Button, Form, Header, Spinner } from './components'
 
 class App extends Component {
-  state = {}
+  state = {
+    loggedIn: null
+  }
   componentWillMount() {
     firebase.initializeApp({
       apiKey: API_KEY,
@@ -23,12 +27,29 @@ class App extends Component {
       storageBucket: STORAGE_BUCKET,
       messagingSenderId: SENDER_ID
     })
+
+    firebase
+      .auth()
+      .onAuthStateChanged(
+        user =>
+          user
+            ? this.setState({ loggedIn: true })
+            : this.setState({ loggedIn: false })
+      )
   }
+  renderContent = () =>
+    this.state.loggedIn === null ? (
+      <Spinner size="large" />
+    ) : this.state.loggedIn ? (
+      <Button onPress={() => firebase.auth().signOut()}>Log Out</Button>
+    ) : (
+      <Form />
+    )
   render() {
     return (
       <View>
         <Header text="Auth" />
-        <Form />
+        {this.renderContent()}
       </View>
     )
   }
